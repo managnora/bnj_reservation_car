@@ -1,0 +1,46 @@
+parameters:
+    app.timezone: 'Europe/Paris'
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+            $defaultTimezone: '%app.timezone%'
+
+    App\:
+        resource: '../src/{Domain,Application}/**/*{Interface,Service,Handler,Mapper}.php'
+
+    App\Application\UseCase\:
+        resource: '../src/Application/UseCase/*'
+        autowire: true
+
+    App\Domain\:
+        resource: '../src/Domain/**/Service/*.php'
+
+    App\Infrastructure\:
+        resource: '../src/Infrastructure/*'
+        exclude: '../src/Infrastructure/{Migrations,Tests,Kernel.php}'
+
+    App\Infrastructure\Controller\:
+        resource: '../src/Infrastructure/Controller/**/*Controller.php'
+        tags: [ 'controller.service_arguments' ]
+
+    App\Domain\Repository\ReservationRepositoryInterface:
+        class: App\Infrastructure\Persistence\Repository\ReservationRepository
+    App\Domain\Repository\CarRepositoryInterface:
+        class: App\Infrastructure\Persistence\Repository\CarRepository
+
+    App\Domain\Service\TimezoneServiceInterface:
+        class: App\Infrastructure\Service\TimezoneService
+        arguments:
+            $defaultTimezone: '%app.timezone%'
+
+    App\Infrastructure\Service\TimezoneService:
+        public: true
+        arguments:
+            $defaultTimezone: '%app.timezone%'
+
+    App\Infrastructure\EventSubscriber\TimezoneSubscriber:
+        tags:
+            - { name: kernel.event_subscriber }
