@@ -15,21 +15,21 @@ git clone https://github.com/managnora/bnj_reservation_car.git
 cd bnj_reservation_car
 ```
 
-2. Installer les dépendances
-```bash
-composer install
-```
+1. Configurer la base de données
 
-3. Configurer la base de données
-   
-Copier le fichier `.env` en `.env.local` et modifier les paramètres de connexion :
+Copier le fichier `.env.dev` en `.env.local` et modifier les paramètres de connexion et le APP_ENV à "local" :
 ```bash
-cp .env .env.local
+cp .env.dev .env.local
 ```
 
 Modifier la ligne suivante dans `.env.local` avec vos paramètres :
 ```
 DATABASE_URL="postgresql://postgres:root@127.0.0.1:5432/reservation_car?serverVersion=16&charset=utf8"
+```
+
+3. Installer les dépendances
+```bash
+composer install
 ```
 
 4. Créer la base de données
@@ -53,7 +53,7 @@ php bin/phpunit
 
 Pour lancer un test spécifique :
 ```bash
-php bin/phpunit tests/Domain/UseCase/CreateReservationTest.php
+php bin/phpunit src/Infrastructure/Tests/Domain/Service/ReservationValidationServiceTest.php
 ```
 
 ## Tester l'API
